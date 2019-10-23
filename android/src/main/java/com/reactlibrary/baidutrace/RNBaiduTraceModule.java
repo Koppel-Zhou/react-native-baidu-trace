@@ -123,7 +123,7 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
     // 注意：因为startTrace与startGather是异步执行，且startGather依赖startTrace执行开启服务成功，
     // 所以建议startGather在public void onStartTraceCallback(int errorNo, String message)回调返回错误码为0后，
     // 再进行调用执行，否则会出现服务开启失败12002的错误。
-    mTraceClient.startTrace(mTrace, mTraceListener);
+    mTraceClient.startGather(mTraceListener);
   }
 
   @ReactMethod
