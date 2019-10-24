@@ -1,19 +1,22 @@
+require 'json'
+
+package = JSON.parse(File.read(File.join(__dir__, '../package.json')))
 
 Pod::Spec.new do |s|
-  s.name         = "RNBaiduTrace"
+  s.name         = package['name']
   s.version      = "1.0.0"
-  s.summary      = "RNBaiduTrace"
+  s.summary      = package['description']
   s.description  = <<-DESC
-                  RNBaiduTrace
+                    Baidu Trace SDK modules for React Native
                    DESC
-  s.homepage     = ""
-  s.license      = "MIT"
-  # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.author             = { "author" => "author@domain.cn" }
-  s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/Koppel-Zhou/react-native-baidu-trace.git", :tag => "master" }
-  s.source_files  = "RNBaiduTrace/**/*.{h,m}"
+  s.homepage     = "https://github.com/Koppel-Zhou/react-native-baidu-trace"
+  s.license      = package['license']
+  s.author       = "Koppel"
+  s.source       = { :git => "git@github.com:Koppel-Zhou/react-native-baidu-trace.git", :tag => "master" }
   s.requires_arc = true
+  s.platform     = :ios, "7.0"
+  s.preserve_paths = "Frameworks/*.framework"
+  s.source_files  = "RNBaiduTrace/*.{h,m}"
 
   s.dependency "React"
   #s.dependency "others"
