@@ -10,8 +10,6 @@
 
 #import <BaiduTraceSDK/BaiduTraceSDK.h>
 
-#define GLOBAL_QUEUE dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-
 typedef NS_ENUM(NSUInteger, ServiceOperationType) {
     YY_SERVICE_OPERATION_TYPE_START_SERVICE,
     YY_SERVICE_OPERATION_TYPE_STOP_SERVICE,
@@ -19,10 +17,15 @@ typedef NS_ENUM(NSUInteger, ServiceOperationType) {
     YY_SERVICE_OPERATION_TYPE_STOP_GATHER,
 };
 
-@interface RNBaiduTrace : RCTEventEmitter <RCTBridgeModule, BTKTraceDelegate>
+@interface RNBaiduTrace : RCTEventEmitter <RCTBridgeModule, BTKTraceDelegate, CLLocationManagerDelegate>
 
 +(RNBaiduTrace *)defaultManager;
 
+/**
+标志是否已经初始化轨迹服务
+*/
+
+@property (nonatomic, assign) BOOL isServiceInited;
 /**
  标志是否已经开启轨迹服务
  */
@@ -58,10 +61,5 @@ typedef NS_ENUM(NSUInteger, ServiceOperationType) {
  停止采集
  */
 -(void)stopGather;
-
-/**
- 发送事件到JS
-*/
-- (void)sendEvent:(NSString *)eventName Info:(NSDictionary *)info;
 
 @end

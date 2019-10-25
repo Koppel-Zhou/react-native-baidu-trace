@@ -21,6 +21,11 @@
     return self;
 }
 
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[@"BaiduTrace_onStartTrace", @"BaiduTrace_onStopTrace", @"BaiduTrace_onStartGather", @"BaiduTrace_onStopGather"];
+}
+
 RCT_EXPORT_MODULE()
 // 填写你在API控制台申请的iOS类型的AK
 NSString * AK = @"";
@@ -33,12 +38,6 @@ NSString* entityName = @"";
 NSInteger gatherInterval = 5;
 NSInteger packInterval = 30;
 BOOL keepAlive = YES;
-BOOL val = YES;
-
-- (NSArray<NSString *> *)supportedEvents
-{
-  return @[@"EventReminder"];
-}
 
 RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
 {
@@ -47,13 +46,12 @@ RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
   entityName = [RCTConvert NSString:config[@"entityName"]];
   serviceId = [RCTConvert NSUInteger:config[@"serviceId"]];
   keepAlive = [RCTConvert BOOL:config[@"keepAlive"]];
-
   // 设置鹰眼SDK的基础信息
   // 每次调用startService开启轨迹服务之前，可以重新设置这些信息。
   BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
-  val = [[BTKAction sharedInstance] initInfo:sop];
-  
-  NSLog(@"轨迹服务这是初始化返回值：%@", val ? @"YES" : @"NO");
+  _isServiceInited = [[BTKAction sharedInstance] initInfo:sop];
+    
+  NSLog(@"轨迹服务初始化是否成功：%@", _isServiceInited ? @"YES" : @"NO");
 }
 
 RCT_EXPORT_METHOD(setGatherAndPackageInterval:(NSInteger)gather packInterval:(NSInteger)pack)
@@ -65,37 +63,36 @@ RCT_EXPORT_METHOD(setGatherAndPackageInterval:(NSInteger)gather packInterval:(NS
 
 RCT_EXPORT_METHOD(startTrace)
 {
-  NSLog(@"轨迹服务开启服务，这是entityName：%@", entityName);
-  // 设置开启轨迹服务时的服务选项，指定本次服务以entityName的名义开启
-  BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
-  // 开启服务
-   dispatch_async(GLOBAL_QUEUE, ^{
-         [[BTKAction sharedInstance] startService:op delegate:self];
-     });
+  if (_isServiceInited) {
+      // 设置开启轨迹服务时的服务选项，指定本次服务以entityName的名义开启
+      BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
+      // 开启服务
+      [[BTKAction sharedInstance] startService:op delegate:self];
+  }else{
+    BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
+    _isServiceInited = [[BTKAction sharedInstance] initInfo:sop];
+    BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
+    // 开启服务
+    [[BTKAction sharedInstance] startService:op delegate:self];
+  }
 }
 
 RCT_EXPORT_METHOD(stopTrace)
 {
   // 停止服务
-  dispatch_async(GLOBAL_QUEUE, ^{
-      [[BTKAction sharedInstance] stopService:self];
-  });
+  [[BTKAction sharedInstance] stopService:self];
 }
 
 RCT_EXPORT_METHOD(startGather)
 {
   // 开始收集
-   dispatch_async(GLOBAL_QUEUE, ^{
-       [[BTKAction sharedInstance] startGather:self];
-   });
+  [[BTKAction sharedInstance] startGather:self];
 }
 
 RCT_EXPORT_METHOD(stopGather)
 {
   //  停止收集
-  dispatch_async(GLOBAL_QUEUE, ^{
-      [[BTKAction sharedInstance] stopGather:self];
-  });
+  [[BTKAction sharedInstance] stopGather:self];
 }
 
 // 需要保活以及后台轨迹追踪时，需要在Info.plist文件中增加后台定位相关配置，同时实现此回调
@@ -104,7 +101,6 @@ RCT_EXPORT_METHOD(stopGather)
 }
 
 -(void)onStartService:(BTKServiceErrorCode)error {
-  NSLog(@"轨迹服务开启回调onStartService");
     // 维护状态标志
     if (error == BTK_START_SERVICE_SUCCESS ||
         error == BTK_START_SERVICE_SUCCESS_BUT_OFFLINE ||
@@ -164,7 +160,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-  [self sendEvent:@"BaiduTrace_onStartTrace" Info:info];
+  [self sendEventWithName:@"BaiduTrace_onStartTrace" body:info];
 }
 
 -(void)onStopService:(BTKServiceErrorCode)error {
@@ -201,11 +197,11 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEvent:@"BaiduTrace_onStopTrace" Info:info];
+    [self sendEventWithName:@"BaiduTrace_onStopTrace" body:info];
 }
 
 -(void)onStartGather:(BTKGatherErrorCode)error {
-  NSLog(@"轨迹服务采集回调onStartGather");
+  NSLog(@"轨迹服务采集回调onStartGather: %@", error ? "YES" : "NO");
     // 维护状态标志
     if (error == BTK_START_GATHER_SUCCESS) {
         NSLog(@"开始采集成功");
@@ -251,7 +247,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEvent:@"BaiduTrace_onStartGather" Info:info];
+    [self sendEventWithName:@"BaiduTrace_onStartGather" body:info];
 }
 
 -(void)onStopGather:(BTKGatherErrorCode)error {
@@ -284,7 +280,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEvent:@"BaiduTrace_onStopGather" Info:info];
+    [self sendEventWithName:@"BaiduTrace_onStopGather" body:info];
 }
 
 @end
