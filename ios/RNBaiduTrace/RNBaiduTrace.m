@@ -201,13 +201,12 @@ RCT_EXPORT_METHOD(stopGather)
 }
 
 -(void)onStartGather:(BTKGatherErrorCode)error {
-  NSLog(@"轨迹服务采集回调onStartGather: %@", error ? "YES" : "NO");
     // 维护状态标志
     if (error == BTK_START_GATHER_SUCCESS) {
-        NSLog(@"开始采集成功");
+        NSLog(@"轨迹服务开始采集成功");
         self.isGatherStarted = TRUE;
     } else {
-        NSLog(@"开始采集失败");
+        NSLog(@"轨迹服务开始采集失败");
     }
     // 构造广播内容
     NSString *title = nil;
