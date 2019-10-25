@@ -16,12 +16,12 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
 
-  public static final String ON_START_TRACE = "BaiduTrace_onStartTrace";
-  public static final String ON_STOP_TRACE = "BaiduTrace_onStopTrace";
-  public static final String ON_START_GATHER = "BaiduTrace_onStartGather";
-  public static final String ON_STOP_GATHER = "BaiduTrace_onStopGather";
-  public static final String ON_BIND_SERVICE = "BaiduTrace_onBindService";
-  public static final String ON_PUSH = "BaiduTrace_onPush";
+  public static final String ON_START_TRACE = "BAIDU_TRACE_ON_START_TRACE";
+  public static final String ON_STOP_TRACE = "BAIDU_TRACE_ON_STOP_TRACE";
+  public static final String ON_START_GATHER = "BAIDU_TRACE_ON_START_GATHER";
+  public static final String ON_STOP_GATHER = "BAIDU_TRACE_ON_STOP_GATHER";
+  public static final String ON_BIND_SERVICE = "BAIDU_TRACE_ON_BIND_SERVICE";
+  public static final String ON_PUSH = "BAIDU_TRACE_ON_PUSH_MESSAGE";
   private static ReactApplicationContext reactContext;
   private LBSTraceClient mTraceClient;
   private Trace mTrace;
@@ -41,7 +41,7 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void init(ReadableMap config) {
+  public void initService(ReadableMap config) {
     // 轨迹服务ID
     long serviceId = config.getInt("serviceId");
     // 设备标识
@@ -58,7 +58,7 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
 
   // 设置定位和打包周期
   @ReactMethod
-  public void setGatherAndPackageInterval(Integer gatherInterval, Integer packInterval) {
+  public void setGatherAndPackInterval(Integer gatherInterval, Integer packInterval) {
     gather = gatherInterval;
     pack = packInterval;
     mTraceClient.setInterval(gather, pack);

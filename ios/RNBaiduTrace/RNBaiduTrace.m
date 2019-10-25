@@ -23,7 +23,12 @@
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"BaiduTrace_onStartTrace", @"BaiduTrace_onStopTrace", @"BaiduTrace_onStartGather", @"BaiduTrace_onStopGather"];
+    return @[
+      @"BAIDU_TRACE_ON_START_TRACE",
+      @"BAIDU_TRACE_ON_STOP_TRACE",
+      @"BAIDU_TRACE_ON_START_GATHER",
+      @"BAIDU_TRACE_ON_STOP_GATHER"
+    ];
 }
 
 RCT_EXPORT_MODULE()
@@ -54,7 +59,7 @@ RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
   NSLog(@"轨迹服务初始化是否成功：%@", _isServiceInited ? @"YES" : @"NO");
 }
 
-RCT_EXPORT_METHOD(setGatherAndPackageInterval:(NSInteger)gather packInterval:(NSInteger)pack)
+RCT_EXPORT_METHOD(setGatherAndPackInterval:(NSInteger)gather packInterval:(NSInteger)pack)
 {
   gatherInterval = gather;
   packInterval = pack;
@@ -160,7 +165,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-  [self sendEventWithName:@"BaiduTrace_onStartTrace" body:info];
+  [self sendEventWithName:@"BAIDU_TRACE_ON_START_TRACE" body:info];
 }
 
 -(void)onStopService:(BTKServiceErrorCode)error {
@@ -197,7 +202,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEventWithName:@"BaiduTrace_onStopTrace" body:info];
+    [self sendEventWithName:@"BAIDU_TRACE_ON_STOP_TRACE" body:info];
 }
 
 -(void)onStartGather:(BTKGatherErrorCode)error {
@@ -246,7 +251,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEventWithName:@"BaiduTrace_onStartGather" body:info];
+    [self sendEventWithName:@"BAIDU_TRACE_ON_START_GATHER" body:info];
 }
 
 -(void)onStopGather:(BTKGatherErrorCode)error {
@@ -279,7 +284,7 @@ RCT_EXPORT_METHOD(stopGather)
                            @"message":message,
                            };
     // 发送广播
-    [self sendEventWithName:@"BaiduTrace_onStopGather" body:info];
+    [self sendEventWithName:@"BAIDU_TRACE_ON_STOP_GATHER" body:info];
 }
 
 @end
