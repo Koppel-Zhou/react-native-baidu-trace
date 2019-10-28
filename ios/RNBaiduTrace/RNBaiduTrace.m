@@ -15,8 +15,9 @@
 -(instancetype)init {
     self = [super init];
     if (self) {
-        _isServiceStarted = FALSE;
-        _isGatherStarted = FALSE;
+      _isServiceInited = FALSE;
+      _isServiceStarted = FALSE;
+      _isGatherStarted = FALSE;
     }
     return self;
 }
@@ -47,16 +48,17 @@ BOOL keepAlive = YES;
 RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
 {
   AK = [RCTConvert NSString:config[@"AK"]];
-  MCODE = [RCTConvert NSString:config[@"mcode"]];
   entityName = [RCTConvert NSString:config[@"entityName"]];
   serviceId = [RCTConvert NSUInteger:config[@"serviceId"]];
   keepAlive = [RCTConvert BOOL:config[@"keepAlive"]];
   // 设置鹰眼SDK的基础信息
   // 每次调用startService开启轨迹服务之前，可以重新设置这些信息。
-  BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
-  _isServiceInited = [[BTKAction sharedInstance] initInfo:sop];
-    
-  NSLog(@"轨迹服务初始化是否成功：%@", _isServiceInited ? @"YES" : @"NO");
+  if(!_isServiceInited) {
+    MCODE = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
+    self.isServiceInited = [[BTKAction sharedInstance] initInfo:sop];
+    NSLog(@"轨迹服务初始化是否成功：%@, bundleID：%@", _isServiceInited ? @"YES" : @"NO", MCODE);
+  }
 }
 
 RCT_EXPORT_METHOD(setGatherAndPackInterval:(NSInteger)gather packInterval:(NSInteger)pack)
@@ -68,17 +70,11 @@ RCT_EXPORT_METHOD(setGatherAndPackInterval:(NSInteger)gather packInterval:(NSInt
 
 RCT_EXPORT_METHOD(startTrace)
 {
-  if (_isServiceInited) {
+  if (!_isServiceStarted) {
       // 设置开启轨迹服务时的服务选项，指定本次服务以entityName的名义开启
       BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
       // 开启服务
       [[BTKAction sharedInstance] startService:op delegate:self];
-  }else{
-    BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
-    _isServiceInited = [[BTKAction sharedInstance] initInfo:sop];
-    BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
-    // 开启服务
-    [[BTKAction sharedInstance] startService:op delegate:self];
   }
 }
 
@@ -91,7 +87,9 @@ RCT_EXPORT_METHOD(stopTrace)
 RCT_EXPORT_METHOD(startGather)
 {
   // 开始收集
-  [[BTKAction sharedInstance] startGather:self];
+   if (!_isGatherStarted) {
+     [[BTKAction sharedInstance] startGather:self];
+   }
 }
 
 RCT_EXPORT_METHOD(stopGather)
