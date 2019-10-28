@@ -1,5 +1,5 @@
 
-# react-native-baidu-trace
+# @koppel/react-native-baidu-trace
 
 Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼轨迹 React Native 模块
 
@@ -7,7 +7,7 @@ Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼�
 
 ## Getting started
 
-`$ npm install react-native-baidu-trace --save`
+`$ npm install @koppel/react-native-baidu-trace --save`
 
 ### Mostly automatic installation
 
@@ -15,7 +15,7 @@ Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼�
 
 **另外：如遇到项目报错`image not found`，请尝试将项目TARGETS的`General`下`Frameworks,Libraries,and Embedded Content`的BaiduTraceSDK.Framework的`Embed`选项改为`Embed & Sign`**，我尝试了按照网上的教程在`Build Phases`下`Link Binary With Libraries`将BaiduTraceSDK.Framework的`Status`由默认的`Required`改为`Optional`，项目可以正常运行，但初始化是一直失败的。
 
-`$ react-native link react-native-baidu-trace`
+`$ react-native link @koppel/react-native-baidu-trace`
 
 ### Android 其他设置
 
@@ -60,7 +60,7 @@ android:value="AK" />       //key:开发者申请的Key
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-baidu-trace` and add `RNBaiduTrace.xcodeproj`
+2. Go to `node_modules` ➜ `@koppel/react-native-baidu-trace/RNBaiduTrace` and add `RNBaiduTrace.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNBaiduTrace.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -71,18 +71,18 @@ android:value="AK" />       //key:开发者申请的Key
   - Add `new RNBaiduTracePackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-    	include ':react-native-baidu-trace'
-    	project(':react-native-baidu-trace').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-baidu-trace/android')
+    	include ':@koppel_react-native-baidu-trace'
+    	project(':@koppel_react-native-baidu-trace').projectDir = new File(rootProject.projectDir, 	'../node_modules/@koppel/react-native-baidu-trace/android')
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   ```
-      compile project(':react-native-baidu-trace')
+      compile project(':@koppel_react-native-baidu-trace')
   ```
 
 ## Usage
 
 ```javascript
-import BaiduTrace, { BaiduTraceEventEmitter } from 'react-native-baidu-trace';
+import BaiduTrace, { BaiduTraceEventEmitter } from '@koppel/react-native-baidu-trace';
 ```
 
 ### Init Service
