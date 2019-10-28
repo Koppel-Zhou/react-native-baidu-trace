@@ -89,8 +89,7 @@ import BaiduTrace, { BaiduTraceEventEmitter } from 'react-native-baidu-trace';
 
 ```javascript
 BaiduTrace.initService({
-	AK: '在百度注册的iOS AK',													// iOS
-	mcode: '在百度注册时所填写的bundle ID',						  // iOS			
+	AK: '在百度注册的iOS AK',													// iOS		
 	serviceId: '在百度注册轨迹服务时的serviceId',			  // iOS & Android
 	entityName: '设备标识符',													// iOS & Android
 	isNeedObjectStorage: false,											// Android
