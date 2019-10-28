@@ -1,18 +1,18 @@
 
-import { NativeModules, Platform, DeviceEventEmitter, NativeEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const { RNBaiduTrace } = NativeModules;
 
   /**
    * @class 百度鹰眼服务的事件监听器
    */
-export const BaiduTraceEventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(RNBaiduTrace) : DeviceEventEmitter;
+export const BaiduTraceEventEmitter = new NativeEventEmitter(RNBaiduTrace);
 export default {
   /**
    * @method initService 初始化服务
    * @param {
    * config: Platform === 'iOS'
-   * ? {AK, mcode, serviceId, entityName, keepAlive}
+   * ? {AK, serviceId, entityName, keepAlive}
    * : {serviceId, entityName, isNeedObjectStorage}}
    */
   initService: config => RNBaiduTrace.initService(config),
