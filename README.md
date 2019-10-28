@@ -11,6 +11,10 @@ Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼�
 
 ### Mostly automatic installation
 
+**iOS 使用react-native link 目前有些问题。解决办法：libRNBaiduTrace.a和BaiduTraceSDK.Framework文件重新手动导入。**
+
+**另外：如遇到项目报错`image not found`，请尝试将项目TARGETS的`General`下`Frameworks,Libraries,and Embedded Content`的BaiduTraceSDK.Framework的`Embed`选项改为`Embed & Sign`**，我尝试了按照网上的教程在`Build Phases`下`Link Binary With Libraries`将BaiduTraceSDK.Framework的`Status`由默认的`Required`改为`Optional`，项目可以正常运行，但初始化是一直失败的。
+
 `$ react-native link react-native-baidu-trace`
 
 ### Android 其他设置
