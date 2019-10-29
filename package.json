@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native rn baidu trace"
+    "react-native",
+    "rn",
+    "baidu",
+    "trace"
   ],
   "author": "Koppel",
   "license": "MIT",
