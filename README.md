@@ -47,6 +47,10 @@ android:value="AK" />       //key:开发者申请的Key
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <!-- Android Q之后，后台定位需要申请该权限 -->
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<!-- Android O之后开启前台服务需要申请该权限 -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<!-- Android Q之后，后台定位需要申请该权限 -->
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 <!-- 以下不是鹰眼SDK需要的基础权限，可选 -->
 <!-- 用于加快GPS首次定位，可选权限，非必须-->
 <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
