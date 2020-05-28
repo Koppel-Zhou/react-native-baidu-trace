@@ -24,12 +24,6 @@ android {
     lintOptions {
         abortOnError false
     }
-
-    sourceSets {
-        main {
-            jniLibs.srcDir 'libs'
-        }
-    }
 }
 
 repositories {
@@ -38,6 +32,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+     implementation 'com.baidu.lbs:trace:+'
     implementation 'com.facebook.react:react-native:+'
 }
   
