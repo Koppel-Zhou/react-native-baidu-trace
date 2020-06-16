@@ -35,6 +35,11 @@ export default {
   stopTrace: () => RNBaiduTrace.stopTrace(),
 
   /**
+   * @method updateEntity 更新Entity
+   */
+  updateEntity: config => RNBaiduTrace.updateEntity(config),
+
+  /**
    * @method startGather 开始收集定位信息
    */
   startGather: () => RNBaiduTrace.startGather(),

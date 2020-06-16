@@ -96,6 +96,7 @@ BaiduTrace.initService({
 	AK: '在百度注册的iOS AK',													// iOS		
 	serviceId: '在百度注册轨迹服务时的serviceId',			  // iOS & Android
 	entityName: '设备标识符',													// iOS & Android
+	entityDesc: '设备描述',														// iOS & Android
 	isNeedObjectStorage: false,											// Android
 	keepAlive: true,																// iOS
 });
@@ -121,14 +122,24 @@ BaiduTrace.startGather();
 BaiduTrace.stopGather()
 ```
 
+### Update Entity
+```javascript
+BaiduTrace.updateEntity({
+	[columnKey1]: [columnValue1],
+	[columnKey2]: [columnValue2],
+	...
+});
+```
+
 ### 添加事件监听
 支持下列事件:
 | 监听器标志 | 含义|
 | - | - |
 | BAIDU_TRACE_ON_START_TRACE  	| 开启追踪服务			|
-| BAIDU_TRACE_ON_STOP_TRACE   	| 停止追踪服务			|
+| BAIDU_TRACE_ON_STOP_TRACE   	| 停止追踪服务		  |
 | BAIDU_TRACE_ON_START_GATHER 	| 开始收集定位信息	 |
 | BAIDU_TRACE_ON_STOP_GATHER  	| 停止收集定位信息	 |
+| BAIDU_TRACE_ON_UPDATE_ENTITY 	| 更新Entity	     |
 | BAIDU_TRACE_ON_BIND_SERVICE(only available on Android) 	| 绑定追踪服务			|
 
 ```javascript

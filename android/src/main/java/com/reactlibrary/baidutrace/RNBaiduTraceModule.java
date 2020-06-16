@@ -1,6 +1,12 @@
 
 package com.reactlibrary.baidutrace;
 
+import android.util.Log;
+
+import com.baidu.trace.api.entity.OnEntityListener;
+import com.baidu.trace.api.entity.UpdateEntityRequest;
+import com.baidu.trace.api.entity.UpdateEntityResponse;
+import com.baidu.trace.api.entity.AddEntityResponse;
 import com.baidu.trace.model.PushMessage;
 import com.baidu.trace.Trace;
 import com.baidu.trace.LBSTraceClient;
@@ -9,10 +15,14 @@ import com.baidu.trace.model.OnTraceListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
 
@@ -22,9 +32,16 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
   public static final String ON_STOP_GATHER = "BAIDU_TRACE_ON_STOP_GATHER";
   public static final String ON_BIND_SERVICE = "BAIDU_TRACE_ON_BIND_SERVICE";
   public static final String ON_PUSH = "BAIDU_TRACE_ON_PUSH_MESSAGE";
-  private static ReactApplicationContext reactContext;
-  private LBSTraceClient mTraceClient;
-  private Trace mTrace;
+  public static final String ON_UPDATE_ENTITY = "BAIDU_TRACE_ON_UPDATE_ENTITY";
+  private static ReactApplicationContext reactContext = null;
+  private LBSTraceClient mTraceClient = null;
+  private Trace mTrace = null;
+  private OnEntityListener entityListener = null;
+
+  private long serviceId = 0;
+  private String entityName = "";
+  private String entityDesc = "";
+  private boolean isNeedObjectStorage = false;
   // 定位周期(单位:秒)
   private int gather = 5;
   // 打包回传周期(单位:秒)
@@ -43,11 +60,12 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void initService(ReadableMap config) {
     // 轨迹服务ID
-    long serviceId = config.getInt("serviceId");
+    serviceId = config.getInt("serviceId");
     // 设备标识
-    String entityName = config.getString("entityName");
+    entityName = config.getString("entityName");
+    entityDesc = config.getString("entityDesc");
     // 是否需要对象存储服务，默认为：false，关闭对象存储服务。注：鹰眼 Android SDK v3.0以上版本支持随轨迹上传图像等对象数据，若需使用此功能，该参数需设为 true，且需导入bos-android-sdk-1.0.2.jar。
-    boolean isNeedObjectStorage = config.getBoolean("isNeedObjectStorage");
+    isNeedObjectStorage = config.getBoolean("isNeedObjectStorage");
     // 初始化轨迹服务
     this.mTrace = new Trace(serviceId, entityName, isNeedObjectStorage);
     // 初始化轨迹服务客户端
@@ -124,6 +142,19 @@ public class RNBaiduTraceModule extends ReactContextBaseJavaModule {
     // 所以建议startGather在public void onStartTraceCallback(int errorNo, String message)回调返回错误码为0后，
     // 再进行调用执行，否则会出现服务开启失败12002的错误。
     mTraceClient.startGather(mTraceListener);
+  }
+
+  @ReactMethod
+  public void updateEntity(ReadableMap config) {
+    ReadableNativeMap map = (ReadableNativeMap) config;
+    HashMap map2 = map.toHashMap();
+    UpdateEntityRequest request = new UpdateEntityRequest(0 , serviceId, entityName, entityDesc, map2);
+    mTraceClient.updateEntity(request, new OnEntityListener() {
+      @Override
+      public void onUpdateEntityCallback(UpdateEntityResponse res)  {
+        RNBaiduTraceModule.sendEvent(ON_UPDATE_ENTITY, res.status, res.message);
+      }
+    });
   }
 
   @ReactMethod

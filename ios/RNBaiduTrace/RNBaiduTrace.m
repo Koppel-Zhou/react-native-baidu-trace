@@ -28,7 +28,8 @@
       @"BAIDU_TRACE_ON_START_TRACE",
       @"BAIDU_TRACE_ON_STOP_TRACE",
       @"BAIDU_TRACE_ON_START_GATHER",
-      @"BAIDU_TRACE_ON_STOP_GATHER"
+      @"BAIDU_TRACE_ON_STOP_GATHER",
+      @"BAIDU_TRACE_ON_UPDATE_ENTITY"
     ];
 }
 
@@ -41,6 +42,7 @@ NSString * MCODE = @"";
 NSUInteger serviceId = 0;
 
 NSString* entityName = @"";
+NSString* entityDesc = @"";
 NSInteger gatherInterval = 5;
 NSInteger packInterval = 30;
 BOOL keepAlive = YES;
@@ -49,6 +51,7 @@ RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
 {
   AK = [RCTConvert NSString:config[@"AK"]];
   entityName = [RCTConvert NSString:config[@"entityName"]];
+  entityDesc = [RCTConvert NSString:config[@"entityDesc"]];
   serviceId = [RCTConvert NSUInteger:config[@"serviceId"]];
   keepAlive = [RCTConvert BOOL:config[@"keepAlive"]];
   // 设置鹰眼SDK的基础信息
@@ -75,6 +78,15 @@ RCT_EXPORT_METHOD(startTrace)
       BTKStartServiceOption *op = [[BTKStartServiceOption alloc] initWithEntityName:entityName];
       // 开启服务
       [[BTKAction sharedInstance] startService:op delegate:self];
+  }
+}
+
+RCT_EXPORT_METHOD(updateEntity:(NSDictionary *)config)
+{
+  
+  if (_isServiceStarted) {
+    BTKUpdateEntityRequest *request = [[BTKUpdateEntityRequest alloc] initWithEntityName:entityName entityDesc: entityDesc columnKey: config serviceID: serviceId tag: 0];
+    [[BTKEntityAction sharedInstance] updateEntityWith:request delegate:self];
   }
 }
 
@@ -283,6 +295,25 @@ RCT_EXPORT_METHOD(stopGather)
                            };
     // 发送广播
     [self sendEventWithName:@"BAIDU_TRACE_ON_STOP_GATHER" body:info];
+}
+
+-(void)onUpdateEntity:(NSData *)response {
+  NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:response options:NSJSONReadingAllowFragments error:nil];
+  if (nil == dict) {
+      NSLog(@"Update Entity 格式转换出错");
+      return;
+  }
+  if (0 != [dict[@"status"] intValue]) {
+      NSLog(@"Update Entity 返回错误");
+      return;
+  }
+  // 构造广播内容
+  NSDictionary *info = @{@"type":@([dict[@"status"] intValue]),
+                         @"title": @"Entity更新",
+                         @"message":dict[@"message"],
+                         };
+  // 发送广播
+  [self sendEventWithName:@"BAIDU_TRACE_ON_UPDATE_ENTITY" body:info];
 }
 
 @end
