@@ -1,6 +1,6 @@
 {
   "name": "@koppel/react-native-baidu-trace",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Baidu Trace SDK modules for React Native",
   "main": "index.js",
   "scripts": {
