@@ -1,6 +1,5 @@
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.reactlibrary.baidutrace">
+          package="com.reactlibrary">
     <application>
         <service
             android:name="com.baidu.trace.LBSTraceService"

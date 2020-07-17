@@ -17,9 +17,9 @@ typedef NS_ENUM(NSUInteger, ServiceOperationType) {
     YY_SERVICE_OPERATION_TYPE_STOP_GATHER,
 };
 
-@interface RNBaiduTrace : RCTEventEmitter <RCTBridgeModule, BTKTraceDelegate, CLLocationManagerDelegate>
+@interface BaiduTrace : RCTEventEmitter <RCTBridgeModule, BTKTraceDelegate, CLLocationManagerDelegate>
 
-+(RNBaiduTrace *)defaultManager;
++(BaiduTrace *)defaultManager;
 
 /**
 标志是否已经初始化轨迹服务
@@ -63,3 +63,4 @@ typedef NS_ENUM(NSUInteger, ServiceOperationType) {
 -(void)stopGather;
 
 @end
+

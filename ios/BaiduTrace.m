@@ -1,13 +1,12 @@
+#import "BaiduTrace.h"
 
-#import "RNBaiduTrace.h"
+@implementation BaiduTrace
 
-@implementation RNBaiduTrace
-
-+(RNBaiduTrace *)defaultManager {
-    static RNBaiduTrace *manager = nil;
++(BaiduTrace *)defaultManager {
+    static BaiduTrace *manager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        manager = [[RNBaiduTrace alloc] init];
+        manager = [[BaiduTrace alloc] init];
     });
     return manager;
 }
@@ -56,6 +55,7 @@ RCT_EXPORT_METHOD(initService:(NSDictionary *)config)
   keepAlive = [RCTConvert BOOL:config[@"keepAlive"]];
   // 设置鹰眼SDK的基础信息
   // 每次调用startService开启轨迹服务之前，可以重新设置这些信息。
+  NSLog(@"轨迹服务初始化是否成功：%@", _isServiceInited ? @"YES" : @"NO");
   if(!_isServiceInited) {
     MCODE = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     BTKServiceOption* sop = [[BTKServiceOption alloc] initWithAK:AK mcode:MCODE serviceID:serviceId keepAlive:keepAlive];
@@ -317,4 +317,3 @@ RCT_EXPORT_METHOD(stopGather)
 }
 
 @end
-  

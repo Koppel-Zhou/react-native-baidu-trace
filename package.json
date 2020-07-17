@@ -1,10 +1,23 @@
 {
   "name": "@koppel/react-native-baidu-trace",
-  "version": "1.0.5",
+  "title": "React Native Baidu Trace",
+  "version": "2.0.0",
   "description": "Baidu Trace SDK modules for React Native",
   "main": "index.js",
+  "files": [
+    "README.md",
+    "android",
+    "index.js",
+    "ios",
+    "react-native-baidu-trace.podspec"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koppel-Zhou/react-native-baidu-trace.git",
+    "baseUrl": "https://github.com/Koppel-Zhou/react-native-baidu-trace"
   },
   "keywords": [
     "react-native",
@@ -12,18 +25,19 @@
     "baidu",
     "trace"
   ],
-  "author": "Koppel",
+  "author": {
+    "name": "Koppel",
+    "email": "koppel.zhou@foxmail.com"
+  },
   "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
+    "react": "^16.8.1",
+    "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Koppel-Zhou/react-native-baidu-trace.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Koppel-Zhou/react-native-baidu-trace/issues"
-  },
-  "homepage": "https://github.com/Koppel-Zhou/react-native-baidu-trace#readme"
+  "devDependencies": {
+    "react": "^16.9.0",
+    "react-native": "^0.61.5"
+  }
 }
