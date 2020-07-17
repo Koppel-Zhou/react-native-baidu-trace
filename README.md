@@ -11,6 +11,10 @@ Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼�
 
 ### Mostly automatic installation
 
+#### React Native > 0.60(暂时只测试了0.62.2)
+`cd ios && pod install`
+
+#### React Native < 0.60
 `$ react-native link @koppel/react-native-baidu-trace`
 
 **iOS 使用react-native link 目前有些问题。解决办法：libRNBaiduTrace.a和BaiduTraceSDK.Framework文件重新手动导入。**
