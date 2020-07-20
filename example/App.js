@@ -10,7 +10,8 @@
 
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView } from 'react-native';
-import BaiduTrace, { BaiduTraceEventEmitter } from 'react-native-baidu-trace';
+import BaiduTrace, { BaiduTraceEventEmitter } from '@koppel/react-native-baidu-trace';
+import DeviceInfo from 'react-native-device-info';
 
 export default class App extends Component<{}> {
   constructor(props) {
@@ -45,23 +46,25 @@ export default class App extends Component<{}> {
         console.log('BAIDU_TRACE_ON_UPDATE_ENTITY', result);
       });
 
-    let BDTraceServiceID = "请填写你的鹰眼服务ID";
+    let BDTraceServiceID = 请填写你的鹰眼服务ID;
     let iosAK = '请替换你的百度应用iOS端AK';
+    let eName = `${DeviceInfo.getBrand()}_${DeviceInfo.getDeviceId()}`;
+    
     const config =
       Platform.OS === 'ios'
         ? {
-          AK: iosAK,
-          serviceId: BDTraceServiceID,
-          entityName: 'iOSTrace',
-          entityDesc: `iOSTrace测试`,
-          keepAlive: true,
-        }
+            AK: iosAK,
+            serviceId: BDTraceServiceID,
+            entityName: eName.replace(/,/g, ''),
+            entityDesc: `iOSTrace测试设备${eName.replace(/,/g, '/')}`,
+            keepAlive: true,
+          }
         : {
-          serviceId: BDTraceServiceID,
-          entityName: 'AndroidTrace',
-          entityDesc: `AndroidTrace测试`,
-          isNeedObjectStorage: false,
-        };
+            serviceId: BDTraceServiceID,
+            entityName: eName.replace(/,/g, ''),
+            entityDesc: `AndroidTrace测试设备${eName.replace(/,/g, '/')}`,
+            isNeedObjectStorage: false,
+          };
     this.setState({ tip: this.state.tip + "初始化参数：\n" + JSON.stringify(config) + "\n" });
     BaiduTrace.initService(config);
     BaiduTrace.setGatherAndPackInterval(3, 6);
