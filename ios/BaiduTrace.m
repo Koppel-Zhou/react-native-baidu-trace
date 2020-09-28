@@ -100,6 +100,7 @@ RCT_EXPORT_METHOD(startGather)
 {
   // 开始收集
    if (!_isGatherStarted) {
+     [[BTKAction sharedInstance] showsBackgroundLocationIndicator:YES];
      [[BTKAction sharedInstance] startGather:self];
    }
 }

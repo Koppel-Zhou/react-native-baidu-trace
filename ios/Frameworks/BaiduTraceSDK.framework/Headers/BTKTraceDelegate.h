@@ -10,7 +10,9 @@
 #import "BTKTypes.h"
 #import "BTKPushMessage.h"
 #import <CoreLocation/CoreLocation.h>
-
+#ifndef __IPHONE_14_0
+#define __IPHONE_14_0 140000
+#endif
 /// 轨迹服务的代理协议，服务和采集的相关操作的执行结果，通过本协议中的方法回调
 @protocol BTKTraceDelegate <NSObject>
 
@@ -78,9 +80,9 @@
 -(void)onSetCacheMaxSize:(BTKSetCacheMaxSizeErrorCode) error;
 
 /**
-请求后台定位权限的回调方法
+ 3.1.2起废弃，请求后台定位权限的回调方法
 
 @param locationManager 定位控制器，开发者需要调用该实例的requestAlwaysAuthorization方法
 */
--(void)onRequestAlwaysLocationAuthorization:(CLLocationManager *) locationManager;
+-(void)onRequestAlwaysLocationAuthorization:(CLLocationManager *) locationManager __deprecated_msg("废弃方法,定位权限需要开发者主动申请");
 @end

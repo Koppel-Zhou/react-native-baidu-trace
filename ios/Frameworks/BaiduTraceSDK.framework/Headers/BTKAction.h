@@ -66,6 +66,14 @@
  @param distanceFilter 触发定位的距离阀值
  */
 -(void)setLocationAttributeWithActivityType:(CLActivityType)activityType desiredAccuracy:(CLLocationAccuracy)desiredAccuracy distanceFilter:(CLLocationDistance)distanceFilter;
+/**
+ 设置是否显示定位指示蓝条
+
+ @param show YES:显示（进入后台时保留被授予的临时访问权限） NO：不显示
+ */
+
+-(void)showsBackgroundLocationIndicator:(BOOL)show;
+
 
 /**
  设置采集周期和打包上传的周期
