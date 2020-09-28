@@ -52,7 +52,7 @@
 
       <meta-data             
         android:name="com.baidu.lbsapi.API_KEY"             
-        android:value="请填写你的百度应用Android端AK" />
+        android:value="VdbvqwcBEdvqujqdvHuL0I5rigjNnWPv" />
     </application>
 
 </manifest>

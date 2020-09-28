@@ -8,10 +8,13 @@
  * https://github.com/facebook/react-native
  */
 
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, ScrollView } from 'react-native';
-import BaiduTrace, { BaiduTraceEventEmitter } from '@koppel/react-native-baidu-trace';
+import React, {Component} from 'react';
+import {Platform, StyleSheet, Text, ScrollView, Alert} from 'react-native';
+import BaiduTrace, {
+  BaiduTraceEventEmitter,
+} from '@koppel/react-native-baidu-trace';
 import DeviceInfo from 'react-native-device-info';
+import Permissions from 'react-native-permissions';
 
 export default class App extends Component<{}> {
   constructor(props) {
@@ -24,32 +27,50 @@ export default class App extends Component<{}> {
     BaiduTraceEventEmitter.addListener(
       'BAIDU_TRACE_ON_START_TRACE',
       (result) => {
-        this.setState({ tip: this.state.tip + "START_TRACE结果：\n" + JSON.stringify(result) + "\n" });
+        this.setState({
+          tip:
+            this.state.tip +
+            'START_TRACE结果：\n' +
+            JSON.stringify(result) +
+            '\n',
+        });
         console.log('BAIDU_TRACE_ON_START_TRACE', result);
-        if ((Platform.OS === 'android' && (result.status === 0 || result.status === 10006)) ||
-        (Platform.OS === 'ios' && result.type === 0)) {
+        if (
+          (Platform.OS === 'android' &&
+            (result.status === 0 || result.status === 10006)) ||
+          (Platform.OS === 'ios' && result.type === 0)
+        ) {
           BaiduTrace.startGather();
           // BaiduTrace.updateEntity({
           //   branch_id: "测试entity",
           // });
         }
-      });
+      },
+    );
     BaiduTraceEventEmitter.addListener(
       'BAIDU_TRACE_ON_START_GATHER',
       (result) => {
-        this.setState({ tip: this.state.tip + "START_GATHER结果：\n" + JSON.stringify(result) + "\n" });
+        this.setState({
+          tip:
+            this.state.tip +
+            'START_GATHER结果：\n' +
+            JSON.stringify(result) +
+            '\n',
+        });
         console.log('BAIDU_TRACE_ON_START_GATHER', result);
-      });
+      },
+    );
     BaiduTraceEventEmitter.addListener(
       'BAIDU_TRACE_ON_UPDATE_ENTITY',
       (result) => {
         console.log('BAIDU_TRACE_ON_UPDATE_ENTITY', result);
-      });
+      },
+    );
 
     let BDTraceServiceID = 请填写你的鹰眼服务ID;
     let iosAK = '请替换你的百度应用iOS端AK';
     let eName = `${DeviceInfo.getBrand()}_${DeviceInfo.getDeviceId()}`;
-    
+
     const config =
       Platform.OS === 'ios'
         ? {
@@ -65,10 +86,53 @@ export default class App extends Component<{}> {
             entityDesc: `AndroidTrace测试设备${eName.replace(/,/g, '/')}`,
             isNeedObjectStorage: false,
           };
-    this.setState({ tip: this.state.tip + "初始化参数：\n" + JSON.stringify(config) + "\n" });
-    BaiduTrace.initService(config);
-    BaiduTrace.setGatherAndPackInterval(3, 6);
-    BaiduTrace.startTrace();
+    this.setState({
+      tip: this.state.tip + '初始化参数：\n' + JSON.stringify(config) + '\n',
+    });
+    Permissions.checkMultiple(
+      Platform.OS === 'ios'
+        ? [
+            Permissions.PERMISSIONS.IOS.LOCATION_ALWAYS,
+            Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+          ]
+        : [
+            Permissions.PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+            Permissions.PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          ],
+    ).then((statuses) => {
+      console.log('requestLocation', statuses);
+      if (
+        Object.values(statuses).some(
+          (status) => status !== Permissions.RESULTS.GRANTED,
+        )
+      ) {
+        Permissions.requestMultiple(
+          Platform.OS === 'ios'
+            ? [
+                Permissions.PERMISSIONS.IOS.LOCATION_ALWAYS,
+                Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+              ]
+            : [
+                Permissions.PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+                Permissions.PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+              ],
+        ).then((statuses) => {
+          if (
+            Object.values(statuses).every(
+              (status) => status === Permissions.RESULTS.GRANTED,
+            )
+          ) {
+            BaiduTrace.initService(config);
+            BaiduTrace.setGatherAndPackInterval(3, 6);
+            BaiduTrace.startTrace();
+          }
+        });
+      } else {
+        BaiduTrace.initService(config);
+        BaiduTrace.setGatherAndPackInterval(3, 6);
+        BaiduTrace.startTrace();
+      }
+    });
   }
 
   render() {

@@ -10,10 +10,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@koppel/react-native-baidu-trace": "link:../",
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "@koppel/react-native-baidu-trace": "link:../",
-    "react-native-device-info": "^5.6.2"
+    "react-native-device-info": "^5.6.2",
+    "react-native-permissions": "^2.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
