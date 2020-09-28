@@ -21,6 +21,11 @@ Baidu Trace SDK modules for React Native(Android &amp; iOS),百度地图鹰眼�
 
 **另外：如遇到项目报错`image not found`，请尝试将项目TARGETS的`General`下`Frameworks,Libraries,and Embedded Content`的BaiduTraceSDK.Framework的`Embed`选项改为`Embed & Sign`**，我尝试了按照网上的教程在`Build Phases`下`Link Binary With Libraries`将BaiduTraceSDK.Framework的`Status`由默认的`Required`改为`Optional`，项目可以正常运行，但初始化是一直失败的。
 
+
+如遇以下报错：
+`The linked library 'libPods-example.a' is missing one or more architectures required by this target: armv7/arm64.`，Product->Clean Build Folder之后再运行项目即可。
+
+
 ### Android 其他设置
 
 #### 设置AccessKey
@@ -155,7 +160,15 @@ BaiduTraceEventEmitter.addListener(
 );
 ```
 
+## 寻求帮助
+iOS14后的精度请求和百度iOS鹰眼轨迹SDK文档[配置工程](http://lbsyun.baidu.com/index.php?title=ios-yingyan/guide/buildproject)部分的*iOS14.0 Beta 适配*没有太理解。
+* iOS14后选择始终定位或允许在应用中定位时选择了精度之后是否一直都是选择的精度？
 
-// TODO: 暂时只集成服务的启停以及收集信息的启停功能，其他功能后续有时间添加
+* `requestTemporaryFullAccuracyAuthorizationWithPurposeKey`检查是否只能放在`locationManagerDidChangeAuthorization`方法中？
+
+* 如何能够及时的检查是否是高精度定位以及在非高精度定位时及时的请求高精度定位，从而保证应用尽可能多的时候是高精度定位？
+
+望大佬们指点！
+
 
   
