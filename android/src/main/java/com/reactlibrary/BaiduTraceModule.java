@@ -22,6 +22,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import java.util.HashMap;
 
 public class BaiduTraceModule extends ReactContextBaseJavaModule {
+    static final String TAG = "BaiduTraceModule";
     public static final String ON_START_TRACE = "BAIDU_TRACE_ON_START_TRACE";
     public static final String ON_STOP_TRACE = "BAIDU_TRACE_ON_STOP_TRACE";
     public static final String ON_START_GATHER = "BAIDU_TRACE_ON_START_GATHER";
@@ -55,28 +56,35 @@ public class BaiduTraceModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void initService(ReadableMap config) {
-        Log.i("ON_SINIT_TRACE", config.toString());
-        // 轨迹服务ID
-        serviceId = config.getInt("serviceId");
-        // 设备标识
-        entityName = config.getString("entityName");
-        entityDesc = config.getString("entityDesc");
-        // 是否需要对象存储服务，默认为：false，关闭对象存储服务。注：鹰眼 Android SDK v3.0以上版本支持随轨迹上传图像等对象数据，若需使用此功能，该参数需设为 true，且需导入bos-android-sdk-1.0.2.jar。
-        isNeedObjectStorage = config.getBoolean("isNeedObjectStorage");
-        // 初始化轨迹服务
-        this.mTrace = new Trace(serviceId, entityName, isNeedObjectStorage);
-        // 初始化轨迹服务客户端
-        if (getReactApplicationContext() != null) {
-            this.mTraceClient = new LBSTraceClient(getReactApplicationContext());
+        try {
+            // 轨迹服务ID
+            serviceId = config.getInt("serviceId");
+            // 设备标识
+            entityName = config.getString("entityName");
+            entityDesc = config.getString("entityDesc");
+            // 是否需要对象存储服务，默认为：false，关闭对象存储服务。注：鹰眼 Android SDK v3.0以上版本支持随轨迹上传图像等对象数据，若需使用此功能，该参数需设为 true，且需导入bos-android-sdk-1.0.2.jar。
+            isNeedObjectStorage = config.getBoolean("isNeedObjectStorage");
+            // 初始化轨迹服务
+            this.mTrace = new Trace(serviceId, entityName, isNeedObjectStorage);
+            // 初始化轨迹服务客户端
+            if (getReactApplicationContext() != null) {
+                this.mTraceClient = new LBSTraceClient(getReactApplicationContext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "initService, Error: " + e.toString());
         }
     }
 
     // 设置定位和打包周期
     @ReactMethod
     public void setGatherAndPackInterval(Integer gatherInterval, Integer packInterval) {
-        gather = gatherInterval;
-        pack = packInterval;
-        mTraceClient.setInterval(gather, pack);
+        try {
+            gather = gatherInterval;
+            pack = packInterval;
+            mTraceClient.setInterval(gather, pack);
+        } catch (Exception e) {
+            Log.e(TAG, "setGatherAndPackInterval, Error: " + e.toString());
+        }
     }
 
     public static void sendEvent(String eventName, Integer status, String message) {
@@ -133,7 +141,11 @@ public class BaiduTraceModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void startTrace() {
         // 开启鹰眼服务，启动鹰眼 service
-        mTraceClient.startTrace(mTrace, mTraceListener);
+        try{
+            mTraceClient.startTrace(mTrace, mTraceListener);
+        } catch (Exception e) {
+            Log.e(TAG, "startTrace, Error: " + e.toString());
+        }
     }
 
     @ReactMethod
@@ -142,33 +154,49 @@ public class BaiduTraceModule extends ReactContextBaseJavaModule {
         // 注意：因为startTrace与startGather是异步执行，且startGather依赖startTrace执行开启服务成功，
         // 所以建议startGather在public void onStartTraceCallback(int errorNo, String message)回调返回错误码为0后，
         // 再进行调用执行，否则会出现服务开启失败12002的错误。
-        mTraceClient.startGather(mTraceListener);
+        try{
+            mTraceClient.startGather(mTraceListener);
+        } catch (Exception e) {
+            Log.e(TAG, "startGather, Error: " + e.toString());
+        }
     }
 
     @ReactMethod
     public void updateEntity(ReadableMap config) {
-        ReadableNativeMap map = (ReadableNativeMap) config;
-        HashMap map2 = map.toHashMap();
-        UpdateEntityRequest request = new UpdateEntityRequest(0 , serviceId, entityName, entityDesc, map2);
-        mTraceClient.updateEntity(request, new OnEntityListener() {
-            @Override
-            public void onUpdateEntityCallback(UpdateEntityResponse res)  {
-                BaiduTraceModule.sendEvent(ON_UPDATE_ENTITY, res.status, res.message);
-            }
-        });
+        try{
+            ReadableNativeMap map = (ReadableNativeMap) config;
+            HashMap map2 = map.toHashMap();
+            UpdateEntityRequest request = new UpdateEntityRequest(0 , serviceId, entityName, entityDesc, map2);
+            mTraceClient.updateEntity(request, new OnEntityListener() {
+                @Override
+                public void onUpdateEntityCallback(UpdateEntityResponse res)  {
+                    BaiduTraceModule.sendEvent(ON_UPDATE_ENTITY, res.status, res.message);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "updateEntity, Error: " + e.toString());
+        }
     }
 
     @ReactMethod
     public void stopTrace() {
         // 停止服务
         // 停止轨迹服务：此方法将同时停止轨迹服务和轨迹采集，完全结束鹰眼轨迹服务。若需再次启动轨迹追踪，需重新启动服务和轨迹采集
-        mTraceClient.stopTrace(mTrace, mTraceListener);
+        try{
+            mTraceClient.stopTrace(mTrace, mTraceListener);
+        } catch (Exception e) {
+            Log.e(TAG, "stopTrace, Error: " + e.toString());
+        }
     }
 
     @ReactMethod
     public void stopGather() {
         // 停止采集
         // 停止轨迹服务：此方法将同时停止轨迹服务和轨迹采集，完全结束鹰眼轨迹服务。若需再次启动轨迹追踪，需重新启动服务和轨迹采集
-        mTraceClient.stopGather(mTraceListener);
+        try{
+            mTraceClient.stopGather(mTraceListener);
+        } catch (Exception e) {
+            Log.e(TAG, "stopGather, Error: " + e.toString());
+        }
     }
 }
